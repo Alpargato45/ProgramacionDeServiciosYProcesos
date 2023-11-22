@@ -13,16 +13,29 @@ public class SocketTCPClient {
     private Socket socket;
     private DataInputStream dis;
     private DataOutputStream dos;
+    private ChatCliente cliente;
 
-    public SocketTCPClient(String serverIP, int serverPort) {
+    public SocketTCPClient(String serverIP, int serverPort, ChatCliente cliente) {
         this.serverIP = serverIP;
         this.serverPort = serverPort;
+        this.cliente = cliente;
     }
 
-    public void start() throws IOException {
-        socket = new Socket(serverIP, serverPort);
-        dis = new DataInputStream(socket.getInputStream());
-        dos = new DataOutputStream(socket.getOutputStream());
+    public void run() {
+        try {
+            socket = new Socket(serverIP, serverPort);
+            dis = new DataInputStream(socket.getInputStream());
+            dos = new DataOutputStream(socket.getOutputStream());
+
+            while (true) {
+                String mensajeServidor = recibirMensaje();
+                if (mensajeServidor != null) {
+                    cliente.recibirMensajeDelServidor(mensajeServidor);
+                }
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
     public void stop() throws IOException {

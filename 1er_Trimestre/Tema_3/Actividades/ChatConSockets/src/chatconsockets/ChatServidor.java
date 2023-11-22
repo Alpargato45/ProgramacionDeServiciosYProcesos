@@ -81,16 +81,17 @@ public class ChatServidor extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnEnviarActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
+    public void recibirMensajeDelCliente(String mensaje) {
+        Pantalla.append("Cliente: " + mensaje + "\n");
+    }
+    
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(() -> {
             new ChatServidor().setVisible(true);
         });
         try {
-            server = new SocketTCPServer(49171);
-            server.start();
+            ChatServidor servidor = new ChatServidor();
+            server = new SocketTCPServer(49171,servidor);
         } catch (IOException ex) {
             Logger.getLogger(ChatServidor.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -12,22 +12,28 @@ public class SocketTCPServer {
     private DataInputStream dis;
     private DataOutputStream dos;
     private String mensaje;
+    private ChatServidor servidor;
 
-    public SocketTCPServer(int puerto) throws IOException {
+    public SocketTCPServer(int puerto, ChatServidor servidor) throws IOException {
         serverSocket = new ServerSocket(puerto);
+        this.servidor = servidor;
     }
 
-    public void start() throws IOException {
-        socket = serverSocket.accept();
-        dis = new DataInputStream(socket.getInputStream());
-        dos = new DataOutputStream(socket.getOutputStream());
-    }
+    public void run() {
+        try {
+            socket = serverSocket.accept();
+            dis = new DataInputStream(socket.getInputStream());
+            dos = new DataOutputStream(socket.getOutputStream());
 
-    public void stop() throws IOException {
-        dis.close();
-        dos.close();
-        socket.close();
-        serverSocket.close();
+            while (true) {
+                String mensajeCliente = leerMensaje();
+                if (mensajeCliente != null) {
+                    servidor.recibirMensajeDelCliente(mensajeCliente);
+                }
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
     
     public String leerMensaje() throws IOException {
