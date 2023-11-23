@@ -3,10 +3,12 @@ package chatconsockets;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.SwingUtilities;
 
 public class ChatServidor extends javax.swing.JFrame {
 
     private static SocketTCPServer server;
+
     public ChatServidor() {
         initComponents();
     }
@@ -70,35 +72,39 @@ public class ChatServidor extends javax.swing.JFrame {
 
     private void btnEnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnviarActionPerformed
         String mensaje = txtEnviar.getText();
-        if(mensaje != null) {
+        if (mensaje != null) {
             try {
-            server.enviarMensaje(mensaje);
-            Pantalla.append("Servidor: " + mensaje + "\n");
-            txtEnviar.setText("");
-        } catch (IOException ex) {
-            Logger.getLogger(ChatServidor.class.getName()).log(Level.SEVERE, null, ex);
-        }
+                server.enviarMensaje(mensaje);
+                Pantalla.append("Servidor: " + mensaje + "\n");
+                txtEnviar.setText("");
+            } catch (IOException ex) {
+                Logger.getLogger(ChatServidor.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }//GEN-LAST:event_btnEnviarActionPerformed
 
-    public void recibirMensajeDelCliente(String mensaje) {
-        Pantalla.append("Cliente: " + mensaje + "\n");
-    }
-    
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(() -> {
             new ChatServidor().setVisible(true);
         });
         try {
-            ChatServidor servidor = new ChatServidor();
-            server = new SocketTCPServer(49171,servidor);
+            server = new SocketTCPServer(49171);
+            server.start();
+            while (true) {
+                String mensaje = server.leerMensaje();
+                if (mensaje != null) {
+                    SwingUtilities.invokeLater(() -> {
+                        Pantalla.append("Cliente: " + mensaje + "\n");
+                    });
+                }
+            }
         } catch (IOException ex) {
             Logger.getLogger(ChatServidor.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextArea Pantalla;
+    private static javax.swing.JTextArea Pantalla;
     private javax.swing.JButton btnEnviar;
     private javax.swing.JScrollPane jScrollPane1;
     private java.awt.Label label1;
