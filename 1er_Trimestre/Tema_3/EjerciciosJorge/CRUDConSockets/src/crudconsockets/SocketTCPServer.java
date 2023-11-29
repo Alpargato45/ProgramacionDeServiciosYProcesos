@@ -43,6 +43,11 @@ public class SocketTCPServer {
         return mensaje;
     }
     
+    public Perro recibirPerro() throws IOException, ClassNotFoundException {
+        Perro p = (Perro) ois.readObject();
+        return p;
+    }
+    
     public void enviarMensaje(String mensaje) throws IOException {
         oos.writeObject(mensaje);
     }
@@ -53,12 +58,32 @@ public class SocketTCPServer {
     
     //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     
+    public static void añadirPerro(SocketTCPServer server,ArrayList<Perro> listaPerros) throws IOException, ClassNotFoundException {
+        Perro p = server.recibirPerro();
+        p.setId();
+        if(listaPerros.add(p)){
+            server.enviarMensaje("Perro añadido Correctamente");
+        }else {
+            server.enviarMensaje("Perro no se ha podido añadir");
+        }
+    }
+    
     public static void enviarPerro(SocketTCPServer server,ArrayList<Perro> listaPerros) throws IOException, ClassNotFoundException {
         int idPerro = server.recibirEntero();
-        for(Perro p : listaPerros) {
-            if(p.getId() == idPerro) {
-                server.enviarPerro(p);
+        Perro perroEncontrado = null;
+
+        for (Perro p : listaPerros) {
+            System.out.println("ID del perro en la lista: " + p.getId());
+            if (p.getId() == idPerro) {
+                perroEncontrado = p;
+                break; // Salir del bucle cuando se encuentra el perro
             }
+        }
+
+        if (perroEncontrado != null) {
+            server.enviarPerro(perroEncontrado);
+        } else {
+            server.enviarMensaje("Perro no encontrado");
         }
     }
     
@@ -68,7 +93,7 @@ public class SocketTCPServer {
             server.start();
             
             ArrayList<Perro> listaPerros = new ArrayList<Perro>();
-            for (int i = 0; i < 10; i++) {
+            for (int i = 1; i <= 10; i++) {
                 Perro perro = new Perro("pepe"+i);
                 listaPerros.add(perro);
             }
@@ -78,7 +103,7 @@ public class SocketTCPServer {
                 menu = server.recibirEntero();
                 switch (menu) {
                     case 1 -> {
-                        //caso1
+                        añadirPerro(server,listaPerros);
                     }
                     case 2 -> {
                         enviarPerro(server,listaPerros);
@@ -87,7 +112,6 @@ public class SocketTCPServer {
                         //caso3
                     }
                 }
-                
             } while (menu != 4);
             server.stop();
         } catch (IOException ex) {

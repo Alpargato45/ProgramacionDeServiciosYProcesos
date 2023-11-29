@@ -4,7 +4,7 @@ import java.io.*;
 
 
 public class Perro implements Serializable{
-    private static int contadorID = 0;
+    private static int contadorID = 1;
     private int id;
     private String Nombre;
 
@@ -17,8 +17,8 @@ public class Perro implements Serializable{
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setId() {
+        this.id = contadorID++;
     }
 
     public String getNombre() {
@@ -31,9 +31,6 @@ public class Perro implements Serializable{
 
     @Override
     public String toString() {
-        return "Perro " + " ID: " + id + "Nombre: " + Nombre;
+        return "Perro " + "ID: " + id + " Nombre: " + Nombre;
     }
-    
-    
-    
 }
