@@ -11,14 +11,15 @@ public class LecturaRemotaDeFicheros {
         try {
             SocketTCPServer server = new SocketTCPServer(49171);
             server.start();
-            System.out.println("Ruta enviada por el cliente: " + server.leerMensaje());
-            try (BufferedReader out = new BufferedReader(new FileReader(server.leerMensaje()))) {
-                File archivo = new File(server.leerMensaje());
+            String ruta = server.leerMensaje();
+            String mensaje = "";
+            System.out.println("Ruta enviada por el cliente: " + ruta);
+            File archivo = new File(ruta);
+            try (BufferedReader out = new BufferedReader(new FileReader(archivo))) {
                 if (archivo.exists()) {
-                    String mensaje = "";
                     String linea = out.readLine();
                     while (linea != null) {
-                        mensaje += linea;
+                        mensaje += linea + "\n";
                         linea = out.readLine();
                     }
                     server.enviarMensaje(mensaje);

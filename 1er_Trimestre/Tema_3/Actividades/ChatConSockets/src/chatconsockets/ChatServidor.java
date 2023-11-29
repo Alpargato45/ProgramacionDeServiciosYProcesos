@@ -93,9 +93,7 @@ public class ChatServidor extends javax.swing.JFrame {
             while (true) {
                 String mensaje = server.leerMensaje();
                 if (mensaje != null) {
-                    SwingUtilities.invokeLater(() -> {
                         Pantalla.append("Cliente: " + mensaje + "\n");
-                    });
                 }
             }
         } catch (IOException ex) {

@@ -97,9 +97,7 @@ public class ChatCliente extends javax.swing.JFrame {
             while (true) {
                 String mensaje = client.recibirMensaje();
                 if (mensaje != null) {
-                    SwingUtilities.invokeLater(() -> {
                         Pantalla.append("Servidor: " + mensaje + "\n");
-                    });
                 }
             }
         } catch (IOException ex) {
