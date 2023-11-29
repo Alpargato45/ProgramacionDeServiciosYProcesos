@@ -50,10 +50,13 @@ public class SocketTCPClient {
     }
 
     public static void main(String[] args) {
+        String mensaje;
         SocketTCPClient cliente = new SocketTCPClient("localhost", 49171);
         try {
             cliente.start();
             cliente.enviarMensaje(EntradaDatos.pedirCadena("Ruta del archivo a leer:"));
+            mensaje = cliente.recibirMensaje();
+            System.out.println(mensaje);
             cliente.stop();
         } catch (IOException ex) {
             Logger.getLogger(SocketTCPClient.class.getName()).log(Level.SEVERE, null, ex);
