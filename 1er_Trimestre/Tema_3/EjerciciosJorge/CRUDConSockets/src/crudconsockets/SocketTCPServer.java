@@ -12,8 +12,7 @@ public class SocketTCPServer {
 
     private ServerSocket serverSocket;
     private Socket socket;
-    private DataInputStream dis;
-    private DataOutputStream dos;
+    private ObjectInputStream ois;
     private ObjectOutputStream oos;
     private String mensaje;
 
@@ -23,31 +22,29 @@ public class SocketTCPServer {
 
         public void start() throws IOException {
         socket = serverSocket.accept();
-        dis = new DataInputStream(socket.getInputStream());
-        dos = new DataOutputStream(socket.getOutputStream());
+        ois = new ObjectInputStream(socket.getInputStream());
         oos = new ObjectOutputStream(socket.getOutputStream());
     }
 
     public void stop() throws IOException {
-        dis.close();
-        dos.close();
+        ois.close();
         oos.close();
         socket.close();
         serverSocket.close();
     }
     
-    public String leerMensaje() throws IOException {
-        mensaje = dis.readUTF();
+    public String leerMensaje() throws IOException, ClassNotFoundException {
+        mensaje = (String) ois.readObject();
         return mensaje;
     }
     
-    public int recibirEntero() throws IOException {
-        int mensaje = dis.read();
+    public int recibirEntero() throws IOException, ClassNotFoundException {
+        int mensaje = (int) ois.readObject();
         return mensaje;
     }
     
     public void enviarMensaje(String mensaje) throws IOException {
-        dos.writeUTF(mensaje);
+        oos.writeObject(mensaje);
     }
     
     public void enviarPerro(Perro perro) throws IOException {
@@ -56,7 +53,7 @@ public class SocketTCPServer {
     
     //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     
-    public static void enviarPerro(SocketTCPServer server,ArrayList<Perro> listaPerros) throws IOException {
+    public static void enviarPerro(SocketTCPServer server,ArrayList<Perro> listaPerros) throws IOException, ClassNotFoundException {
         int idPerro = server.recibirEntero();
         for(Perro p : listaPerros) {
             if(p.getId() == idPerro) {
@@ -94,6 +91,8 @@ public class SocketTCPServer {
             } while (menu != 4);
             server.stop();
         } catch (IOException ex) {
+            Logger.getLogger(SocketTCPServer.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
             Logger.getLogger(SocketTCPServer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

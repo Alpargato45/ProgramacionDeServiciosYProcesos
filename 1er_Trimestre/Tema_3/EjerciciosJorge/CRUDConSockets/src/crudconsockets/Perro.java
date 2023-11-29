@@ -31,7 +31,7 @@ public class Perro implements Serializable{
 
     @Override
     public String toString() {
-        return "Perro: " + "ID: " + id + "Nombre: " + Nombre;
+        return "Perro " + " ID: " + id + "Nombre: " + Nombre;
     }
     
     

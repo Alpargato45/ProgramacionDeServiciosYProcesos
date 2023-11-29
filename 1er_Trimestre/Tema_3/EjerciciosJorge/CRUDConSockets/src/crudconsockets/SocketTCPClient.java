@@ -13,8 +13,7 @@ public class SocketTCPClient {
     private String serverIP;
     private int serverPort;
     private Socket socket;
-    private DataInputStream dis;
-    private DataOutputStream dos;
+    private ObjectOutputStream oos;
     private ObjectInputStream ois;
 
     public SocketTCPClient(String serverIP, int serverPort) {
@@ -24,25 +23,23 @@ public class SocketTCPClient {
 
     public void start() throws IOException {
         socket = new Socket(serverIP, serverPort);
-        dis = new DataInputStream(socket.getInputStream());
+        oos = new ObjectOutputStream(socket.getOutputStream());
         ois = new ObjectInputStream(socket.getInputStream());
-        dos = new DataOutputStream(socket.getOutputStream());
     }
 
     public void stop() throws IOException {
-        dis.close();
-        dos.close();
+        oos.close();
         ois.close();
         socket.close();
     }
 
-    public String recibirMensaje() throws IOException {
-        String mensaje = dis.readUTF();
+    public String recibirMensaje() throws IOException, ClassNotFoundException {
+        String mensaje = (String) ois.readObject();
         return mensaje;
     }
     
-    public int recibirEntero() throws IOException {
-        int mensaje = dis.read();
+    public int recibirEntero() throws IOException, ClassNotFoundException {
+        int mensaje = (int) ois.readObject();
         return mensaje;
     }
     
@@ -52,11 +49,11 @@ public class SocketTCPClient {
     }
 
     public void enviarMensaje(String mensaje) throws IOException {
-        dos.writeUTF(mensaje);
+        oos.writeObject(mensaje);
     }
     
     public void enviarEntero(int mensaje) throws IOException {
-        dos.write(mensaje);
+        oos.writeObject(mensaje);
     }
     
     //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
