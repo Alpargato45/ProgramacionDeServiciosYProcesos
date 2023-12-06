@@ -20,7 +20,7 @@ public class SocketTCPServer {
         serverSocket = new ServerSocket(puerto);
     }
 
-        public void start() throws IOException {
+    public void start() throws IOException {
         socket = serverSocket.accept();
         ois = new ObjectInputStream(socket.getInputStream());
         oos = new ObjectOutputStream(socket.getOutputStream());
@@ -72,8 +72,9 @@ public class SocketTCPServer {
         int idPerro = server.recibirEntero();
         Perro perroEncontrado = null;
 
+        //Codigo para comprobaciones
         for (Perro p : listaPerros) {
-            System.out.println("ID del perro en la lista: " + p.getId());
+//            System.out.println("ID del perro en la lista: " + p.getId());
             if (p.getId() == idPerro) {
                 perroEncontrado = p;
                 break; // Salir del bucle cuando se encuentra el perro
