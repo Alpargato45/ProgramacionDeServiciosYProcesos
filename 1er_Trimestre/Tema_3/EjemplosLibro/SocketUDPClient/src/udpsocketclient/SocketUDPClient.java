@@ -28,15 +28,13 @@ public class SocketUDPClient {
             
             System.out.println("(Cliente) Enviando datagrama....");
             byte[] mensaje = strMensaje.getBytes();
-            DatagramPacket peticion = new DatagramPacket(mensaje, mensaje.length,
-                                                         hostServidor, puertoServidor);
+            DatagramPacket peticion = new DatagramPacket(mensaje, mensaje.length,hostServidor, puertoServidor);
             socketUDP.send(peticion);
            
             
             System.out.println("(Cliente) Recibiendo datagrama....");
             byte[] buffer = new byte[64];
-            DatagramPacket respuesta = new DatagramPacket(buffer, buffer.length,
-                                                         hostServidor, puertoServidor);
+            DatagramPacket respuesta = new DatagramPacket(buffer, buffer.length,hostServidor, puertoServidor);
             socketUDP.receive(respuesta);
             System.out.println("(Cliente): Mensaje recibido: " + new String(buffer));
             
