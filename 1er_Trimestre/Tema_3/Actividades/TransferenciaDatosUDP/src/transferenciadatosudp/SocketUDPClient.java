@@ -6,6 +6,8 @@ package transferenciadatosudp;
  */
 import java.io.IOException;
 import java.net.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SocketUDPClient {
 
@@ -13,13 +15,24 @@ public class SocketUDPClient {
     private byte[] buffer;
     private DatagramPacket datagramaSalida;
     private DatagramPacket datagramaEntrada;
+    private InetAddress hostServidor;
+    private int puertoServidor;
+
+    public SocketUDPClient(int tamaño, String hostServidor, int puertoServidor) {
+        try {
+            this.buffer = new byte[tamaño];
+            this.hostServidor = InetAddress.getByName(hostServidor);
+            this.puertoServidor = puertoServidor;
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(SocketUDPClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     public void start() throws SocketException {
         socket = new DatagramSocket();
-        buffer = new byte[64];
     }
 
-    public void enviarMensaje(String mensaje, InetAddress hostServidor, int puertoServidor) throws IOException {
+    public void enviarMensaje(String mensaje) throws IOException {
         byte[] mensajeBytes = mensaje.getBytes();
         datagramaSalida = new DatagramPacket(mensajeBytes, mensajeBytes.length, hostServidor, puertoServidor);
         socket.send(datagramaSalida);
@@ -31,7 +44,7 @@ public class SocketUDPClient {
         return buffer;
     }
 
-    public void cerrarSocket() {
+    public void stop() {
         if (socket != null && !socket.isClosed()) {
             socket.close();
         }
