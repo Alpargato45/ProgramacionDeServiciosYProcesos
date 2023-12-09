@@ -14,15 +14,16 @@ public class MainClient {
         try {
             client.start();
             for (int i = 0; i < 10000; i++) {
-                client.enviarMensaje("Mensaje: " + i + "\n");
+                client.enviarMensaje("Mensaje: " + i);
+                Thread.sleep(1);
             }
+            Thread.sleep(10);
             client.enviarMensaje("FIN");
             client.stop();
         } catch (SocketException ex) {
             Logger.getLogger(MainClient.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
+        } catch (IOException | InterruptedException ex) {
             Logger.getLogger(MainClient.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
     }
 }

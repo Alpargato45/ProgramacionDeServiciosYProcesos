@@ -1,7 +1,8 @@
-package transferenciadatosudp;
+package votaciontiemporealudp;
 
 import java.io.IOException;
 import java.net.*;
+import java.nio.ByteBuffer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,10 +39,22 @@ public class SocketUDPServer {
         return buffer;
     }
     
-    public void enviarMensaje(String mensaje, InetAddress address, int port) throws IOException {
+    public void enviarMensaje(String mensaje) throws IOException {
         byte[] mensajeEnviado = mensaje.getBytes();
-        datagramaSalida = new DatagramPacket(mensajeEnviado, mensajeEnviado.length, address, port);
+        datagramaSalida = new DatagramPacket(mensajeEnviado, mensajeEnviado.length, hostCliente, puertoCliente);
         socket.send(datagramaSalida);
+    }
+    
+    public void enviarEntero(int numero) throws IOException {
+        byte[] numeroBytes = ByteBuffer.allocate(Integer.BYTES).putInt(numero).array();
+        datagramaSalida = new DatagramPacket(numeroBytes, numeroBytes.length, hostCliente, puertoCliente);
+        socket.send(datagramaSalida);
+    }
+
+    public int recibirEntero() throws IOException {
+        datagramaEntrada = new DatagramPacket(buffer, buffer.length);
+        socket.receive(datagramaEntrada);
+        return ByteBuffer.wrap(datagramaEntrada.getData()).getInt();
     }
 
     public void stop() {

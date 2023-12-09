@@ -1,22 +1,19 @@
 package transferenciadatosudp;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.net.SocketException;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
-
 public class MainServer {
-    
+
     public static void main(String[] args) {
-        SocketUDPServer server = new SocketUDPServer(64,"localhost",49171);
+        SocketUDPServer server = new SocketUDPServer(64, "localhost", 49171);
         try {
             server.start();
-            
+
+            File archivo = new File("datos.txt");
             String cadena = "";
             while (!cadena.equals("FIN")) {
                 byte[] buffer = server.recibirMensaje();
@@ -30,7 +27,7 @@ public class MainServer {
                     }
                 }
             }
-            
+
             server.stop();
         } catch (SocketException ex) {
             Logger.getLogger(MainServer.class.getName()).log(Level.SEVERE, null, ex);
@@ -38,5 +35,4 @@ public class MainServer {
             Logger.getLogger(MainServer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
 }
