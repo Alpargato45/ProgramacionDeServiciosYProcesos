@@ -10,14 +10,13 @@ import java.util.logging.Logger;
 public class MainClient {
     
     public static void main(String[] args) {
-        SocketUDPClient client = new SocketUDPClient(64,"localhost",49171);
+        SocketUDPClient client = new SocketUDPClient(128,"localhost",49171);
         try {
             client.start();
             for (int i = 0; i < 10000; i++) {
                 client.enviarMensaje("Mensaje: " + i);
                 Thread.sleep(1);
             }
-            Thread.sleep(10);
             client.enviarMensaje("FIN");
             client.stop();
         } catch (SocketException ex) {

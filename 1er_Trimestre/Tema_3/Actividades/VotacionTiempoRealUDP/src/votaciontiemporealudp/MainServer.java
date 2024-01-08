@@ -1,6 +1,7 @@
 package votaciontiemporealudp;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.util.*;
@@ -14,60 +15,64 @@ public class MainServer {
     private static int puntuacionFito = 0;
     private static int puntuacionCanto = 0;
     
-    public static String mensajePuntuacion(SocketUDPServer server, int posPuntuaje) {
+    public static String mensajePuntuacion(int posPuntuaje) {
         String mensaje = "PUNTUACIONES\n";
         switch (posPuntuaje) {
-            case 1-> {
+            case 1 -> {
                 puntuacionMelendi++;
             }
-            case 2-> {
+            case 2 -> {
                 puntuacionEstopa++;
             }
-            case 3-> {
+            case 3 -> {
                 puntuacionFito++;
             }
-            case 4-> {
+            case 4 -> {
                 puntuacionCanto++;
             }
-            default-> {
+            default -> {
                 
             }
         }
         mensaje += "Melendi: " + puntuacionMelendi + " puntos\n";
         mensaje += "Estopa: " + puntuacionEstopa + " puntos\n";
-        mensaje += "Fito y Fitipaldis: " + puntuacionFito+ " puntos\n";
+        mensaje += "Fito y Fitipaldis: " + puntuacionFito + " puntos\n";
         mensaje += "El Canto del Loco: " + puntuacionCanto + " puntos\n";
         return mensaje.trim();
     }
-
-     public static void main(String[] args) {
-
-        SocketUDPServer server = new SocketUDPServer(1024, "localhost", 49171);
+    
+    public static void main(String[] args) throws IOException {
+        
+        SocketUDPServer server = new SocketUDPServer(49171);
+        
+        System.out.println(server.recibirMensaje().trim());
+        
+        int puertoCliente = server.obtenerPuerto();
+        InetAddress direccionCliente = server.obtenerIp();
+        
+        String menu = "";
         try {
-            server.start();
-            System.out.println("Prueba 0");
-            while (true) {
-                int menu = server.recibirEntero();
-                System.out.println("Prueba 1");
-                System.out.println(menu);
-                switch (menu) {
-                    case 1 -> {
-                        System.out.println("Prueba 2.2.2.2");
-                    }
-                    case 2 -> {
-                        System.out.println("Prueba 2");
-                        server.enviarMensaje(mensajePuntuacion(server,0));
-                        System.out.println("Prueba 3");
-                        System.out.println(mensajePuntuacion(server,0));
-                    }
-                    case 3 -> {
-                        //caso3
-                    }
+            while (!menu.equals("3")) {
+                Thread.sleep(100);
+                menu = server.recibirMensaje().trim();
+                
+                if (menu.equalsIgnoreCase("1")) {
+                    String num = server.recibirMensaje().trim();
+                    int numEntero = Integer.parseInt(num);
+                    mensajePuntuacion(numEntero);
+                    server.crearDatagramaPaquete(direccionCliente, puertoCliente, "Punto añadido Correctamente");
+                    server.enviarMensaje();
+                } else if (menu.equalsIgnoreCase("2")) {
+                    String mensaje = mensajePuntuacion(0);
+                    server.crearDatagramaPaquete(direccionCliente, puertoCliente, mensaje);
+                    server.enviarMensaje();
                 }
             }
         } catch (SocketException ex) {
             Logger.getLogger(MainServer.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
+            Logger.getLogger(MainServer.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
             Logger.getLogger(MainServer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

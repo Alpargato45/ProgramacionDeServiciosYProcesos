@@ -12,7 +12,8 @@ import java.util.logging.Logger;
 public class SocketUDPServer {
     
     private DatagramSocket socket;
-    private byte[] buffer;
+    private int TAMANO;
+//    private byte[] buffer;
     private DatagramPacket datagramaEntrada;
     private DatagramPacket datagramaSalida;
     private InetAddress hostCliente;
@@ -20,7 +21,8 @@ public class SocketUDPServer {
 
     public SocketUDPServer(int tamaño, String hostCliente, int puertoCliente) {
         try {
-            this.buffer = new byte[tamaño];
+            TAMANO = tamaño;
+//            this.buffer = new byte[tamaño];
             this.hostCliente = InetAddress.getByName(hostCliente);
             this.puertoCliente = puertoCliente;
         } catch (UnknownHostException ex) {
@@ -33,6 +35,7 @@ public class SocketUDPServer {
     }
     
     public byte[] recibirMensaje() throws IOException {
+        byte[] buffer = new byte[TAMANO];
         datagramaEntrada = new DatagramPacket(buffer, buffer.length);
         socket.receive(datagramaEntrada);
         return buffer;

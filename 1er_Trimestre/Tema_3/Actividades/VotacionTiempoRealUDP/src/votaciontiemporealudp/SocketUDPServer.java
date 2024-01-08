@@ -2,9 +2,6 @@ package votaciontiemporealudp;
 
 import java.io.IOException;
 import java.net.*;
-import java.nio.ByteBuffer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -12,54 +9,43 @@ import java.util.logging.Logger;
  */
 public class SocketUDPServer {
     
-    private DatagramSocket socket;
-    private byte[] buffer;
-    private DatagramPacket datagramaEntrada;
-    private DatagramPacket datagramaSalida;
-    private InetAddress hostCliente;
-    private int puertoCliente;
-
-    public SocketUDPServer(int tamaño, String hostCliente, int puertoCliente) {
-        try {
-            this.buffer = new byte[tamaño];
-            this.hostCliente = InetAddress.getByName(hostCliente);
-            this.puertoCliente = puertoCliente;
-        } catch (UnknownHostException ex) {
-            Logger.getLogger(SocketUDPClient.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    DatagramSocket socketUDP;
+    byte[] buffer;
+    private DatagramPacket entrada;
+    private DatagramPacket salida;
+    
+    //He cambiado esta clase entera con ayuda de Javi para separarla más en vez de como yo la tenía
+    //Para tener más control de las cosas que hago y para que pille bien el puerto y la ip de cada uno
+    //Creo que se enviaba a si mismo el mensaje pq estaba cogiendo su propia ip y puerto y se lo enviaba a el mismo
+        
+    public SocketUDPServer(int puerto) throws IOException {
+        socketUDP = new DatagramSocket(puerto);
     }
     
-    public void start() throws SocketException {
-        socket = new DatagramSocket(49171);;
+     public String recibirMensaje() throws IOException {
+         buffer = new byte[1024];
+        entrada = new DatagramPacket(buffer, buffer.length);
+        socketUDP.receive(entrada);
+        String mensaje = new String(entrada.getData());
+        return mensaje;
     }
     
-    public byte[] recibirMensaje() throws IOException {
-        datagramaEntrada = new DatagramPacket(buffer, buffer.length);
-        socket.receive(datagramaEntrada);
-        return buffer;
+    public int obtenerPuerto(){
+        int puertoCliente = entrada.getPort();
+        return puertoCliente;
     }
     
-    public void enviarMensaje(String mensaje) throws IOException {
-        byte[] mensajeEnviado = mensaje.getBytes();
-        datagramaSalida = new DatagramPacket(mensajeEnviado, mensajeEnviado.length, hostCliente, puertoCliente);
-        socket.send(datagramaSalida);
+    public InetAddress obtenerIp(){
+        InetAddress direccion = entrada.getAddress();
+        return direccion;
     }
-    
-    public void enviarEntero(int numero) throws IOException {
-        byte[] numeroBytes = ByteBuffer.allocate(Integer.BYTES).putInt(numero).array();
-        datagramaSalida = new DatagramPacket(numeroBytes, numeroBytes.length, hostCliente, puertoCliente);
-        socket.send(datagramaSalida);
+       
+    public void crearDatagramaPaquete(InetAddress direccion, int puertoCliente,String mensajeAux){
+        buffer = mensajeAux.getBytes();
+        salida = new DatagramPacket(buffer, buffer.length, direccion, puertoCliente);
     }
 
-    public int recibirEntero() throws IOException {
-        datagramaEntrada = new DatagramPacket(buffer, buffer.length);
-        socket.receive(datagramaEntrada);
-        return ByteBuffer.wrap(datagramaEntrada.getData()).getInt();
-    }
-
-    public void stop() {
-        if (socket != null && !socket.isClosed()) {
-            socket.close();
-        }
+    public void enviarMensaje() throws IOException{      
+        socketUDP.send(salida);
     }
 }
