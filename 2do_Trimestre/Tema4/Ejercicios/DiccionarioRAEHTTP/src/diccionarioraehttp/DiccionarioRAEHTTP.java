@@ -29,6 +29,7 @@ public class DiccionarioRAEHTTP {
             } catch (IOException ex) {
                 System.out.println(ex.getMessage());
             }
+            System.out.println("Descarga Finalizada");
         } catch (MalformedURLException ex) {
             Logger.getLogger(DiccionarioRAEHTTP.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
