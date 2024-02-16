@@ -68,8 +68,9 @@ public class LectorEmail {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 //        System.out.print("Introduce direccion de correo: ");
-        String email  = "jorgedelcid2004@gmail.com";
-        String password = "iwny adyc tvzn twuw";    // Contraseña dada en la configuracion
+        String email  = "richivilla@gmail.com";
+//        System.out.print("Introduce contraseña: ");
+        String password = "kpxxkzbvcfhudtye";    // Contraseña dada en la configuracion
         sc.close();
         try {
             new LectorEmail().leerCarpetaInbox(email, password);

@@ -1,23 +1,12 @@
 
 package com.mycompany.actividadresuelta46;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Properties;
-import java.util.Scanner;
-
-import jakarta.mail.BodyPart;
-import jakarta.mail.Message;
-import jakarta.mail.MessagingException;
-import jakarta.mail.Multipart;
-import jakarta.mail.NoSuchProviderException;
-import jakarta.mail.Session;
-import jakarta.mail.internet.AddressException;
-import jakarta.mail.internet.InternetAddress;
-import jakarta.mail.internet.MimeBodyPart;
-import jakarta.mail.internet.MimeMessage;
-import jakarta.mail.internet.MimeMultipart;
-import jakarta.mail.Transport;
+import java.io.*;
+import java.util.*;
+import jakarta.mail.*;
+import jakarta.mail.internet.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class GestorEmail {
     
@@ -87,9 +76,8 @@ public class GestorEmail {
     }
 
     public void enviarMensajeTexto(String emisor, String destinatario, String asunto,
-            String textoMensaje, String direccionEmail,
-            String password) throws AddressException, MessagingException,
-            IOException {
+            String textoMensaje, String direccionEmail, String password) 
+            throws AddressException, MessagingException, IOException {
 
         setPropiedadesServidorSMTP();
         Message mensaje = crearMensajeTexto(emisor, destinatario, asunto, textoMensaje);
@@ -115,22 +103,21 @@ public class GestorEmail {
     public static void main(String[] args) {
 
         try {
-            Scanner teclado = new Scanner(System.in);
-            System.out.print("Introduce dirección de correo: ");
-            String emailEmisor = teclado.nextLine();   // richivilla@gmail.com
-//            System.out.print("Introduce contraseña: ");
-            String passwordEmisor = "yofobkiwmtucpxex";   // Recogida de la configuracion de la cuenta
-            teclado.close();
 
-            GestorEmail gestorEmail = new GestorEmail();
-            gestorEmail.enviarMensajeTexto(emailEmisor, "richivilla15@hotmail.com",
-                    "Aviso de entrega de factura", "El importe de la factura"
-                    + " es 113,72€", emailEmisor, passwordEmisor);
+            String emailEmisor = "jorgedelcid2004@gmail.com";  // Cuenta Gmail completa de emisor
+            String passwordEmisor = "ahwv vytw neif frtc";  // Codigo de "Contraseñas de aplicacion"
 
-            gestorEmail.enviarMensajeConAdjunto(emailEmisor, "richivilla15@hotmail.com",
-                    "Aviso de entrega de factura", "El importe de la factura"
-                    + " es 113,72€", emailEmisor, passwordEmisor,"Factura.pdf"
-                            + "");
+
+            for (int i = 0; i < 20; i++) {
+                GestorEmail gestorEmail = new GestorEmail();
+            gestorEmail.enviarMensajeTexto(emailEmisor, "caballeroscuro04@gmail.com",
+                    "Moriel gitano", "Moriel Gitano", emailEmisor, passwordEmisor);
+            }
+
+//            gestorEmail.enviarMensajeConAdjunto(emailEmisor, "correobasurakawai@gmail.com",
+//                    "Aviso de entrega de factura", "El importe de la factura"
+//                    + " es 113,72€", emailEmisor, passwordEmisor,"Factura.pdf"
+//                            + "");
             
             System.out.println("Correos enviados");
 
@@ -138,5 +125,4 @@ public class GestorEmail {
             e.printStackTrace();
         } 
     }
-    
 }
